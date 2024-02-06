@@ -1,0 +1,70 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model user {
+  id      Int    @id @default(autoincrement())
+  username    String? @db.VarChar(255)
+  firstname String? @db.VarChar(255)
+  lastname String? @db.VarChar(255)
+  phone String? @db.VarChar(255)
+  email String? @db.VarChar(255)
+  provider String? @db.VarChar(255)
+  password String @db.VarChar(255)
+  resetPasswordToken String? @db.VarChar(255)
+  confirmationToken String? @db.VarChar(255)
+  confirmed Boolean?
+  blocked Boolean?
+  admin Boolean?
+  role Role? @relation(fields: [roleId], references: [Name])
+  roleId String?
+  Posts   Post[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt @default(now())
+}
+
+model Role{
+  Name String @id @db.VarChar(255)
+  Description String @db.VarChar(255)
+  users user[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt @default(now())
+}
+
+model Post {
+  id        Int        @id @default(autoincrement())
+  title     String
+  content   String?
+  author    user      @relation(fields: [authorID], references: [id])
+  authorID  Int        @unique
+  published Boolean?   @default(false)
+  postTags  postTags[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt @default(now())
+}
+
+model Tag {
+  id          Int        @id @default(autoincrement())
+  description String     @db.VarChar(255)
+  name        String     @db.VarChar(50)
+  postTags    postTags[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt @default(now())
+}
+
+model postTags {
+  postId Int
+  post   Post @relation(fields: [postId], references: [id])
+
+  tagId Int
+  tag   Tag @relation(fields: [tagId], references: [id])
+
+  @@id([tagId, postId])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt @default(now())
+}
