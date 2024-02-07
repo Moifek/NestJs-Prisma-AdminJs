@@ -1,9 +1,8 @@
-import { Post } from './post.model.js'
-import { Tag } from './tag.model.js'
-export interface PostTag{
-    post?: Post
-    postID?: number
-    tag?: Tag
-    tagID?: number
-  }
-  
+import { Post } from './post.model';
+import { Tag } from './tag.model';
+export interface PostTag {
+  post?: Post;
+  postID?: number;
+  tag?: Tag;
+  tagID?: number;
+}

@@ -1,16 +1,18 @@
 import { NestFactory } from '@nestjs/core';
-import { AppModule } from './app.module.js';
+import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
-import { LoggerMiddleware } from './Logger/logger.middleware.js';
+import { LoggerMiddleware } from './Logger/logger.middleware';
 import session from 'express-session';
 
-if(!true){
+if (!true) {
   async function bootstrap() {
     const app = await NestFactory.create(AppModule, { abortOnError: false });
-    app.useGlobalPipes(new ValidationPipe({
-      //disableErrorMessages: true,
-      //whitelist: true
-    }));
+    app.useGlobalPipes(
+      new ValidationPipe({
+        //disableErrorMessages: true,
+        //whitelist: true
+      }),
+    );
     //use this to apply the middleware to all routes
     //const logger = new LoggerMiddleware();
     //app.use(logger.use);
@@ -29,5 +31,4 @@ if(!true){
   bootstrap();
 }
 
-  
 export const viteNodeApp = NestFactory.create(AppModule);
