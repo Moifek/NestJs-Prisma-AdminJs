@@ -1,8 +1,8 @@
 import { MiddlewareConsumer, Module, NestModule, RequestMethod } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { LoggerMiddleware } from './Logger/logger.middleware.js';
-import { AuthModule } from './auth/auth.module.js';
-import { PrismaService } from './prisma/prisma.service.js';
+import { LoggerMiddleware } from './Logger/logger.middleware';
+import { AuthModule } from './auth/auth.module';
+import { PrismaService } from './prisma/prisma.service';
 
 import AdminJS from 'adminjs';
 import {Database,Resource, getModelByName} from '@adminjs/prisma'
