@@ -1,5 +1,5 @@
 import { REQUEST, INQUIRER, ModuleRef, NestFactory } from '@nestjs/core';
-import { Injectable, Scope, Inject, HttpException, HttpStatus, UnauthorizedException, HttpCode, Post, Body, UseGuards, Get, Req, Controller, Param, Patch, Delete, Module, RequestMethod } from '@nestjs/common';
+import { Injectable, Scope, Inject, HttpException, HttpStatus, UnauthorizedException, HttpCode, Post, Body, UseGuards, Get, Req, Controller, Param, Patch, Delete, Module, RequestMethod, ValidationPipe } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { PrismaClient } from '@prisma/client';
@@ -12,7 +12,7 @@ import { config } from 'dotenv';
 import AdminJS from 'adminjs';
 import { Database, Resource, getModelByName } from '@adminjs/prisma';
 import { AdminModule } from '@adminjs/nestjs';
-import 'express-session';
+import session from 'express-session';
 
 function _ts_decorate$d(decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -834,6 +834,33 @@ AppModule = _ts_decorate([
     })
 ], AppModule);
 
-const viteNodeApp = await NestFactory.create(AppModule);
+async function bootstrapApp(options) {
+    const app = await NestFactory.create(AppModule, {
+        abortOnError: false
+    });
+    app.enableCors();
+    app.useGlobalPipes(new ValidationPipe({
+    }));
+    app.use(session({
+        secret: 'my-secret',
+        resave: false,
+        saveUninitialized: false
+    }));
+    //use this to apply the middleware to all routes
+    //const logger = new LoggerMiddleware();
+    //app.use(logger.use);
+    return app;
+}
+async function main() {
+    const app = await bootstrapApp();
+    await app.listen(3000);
+}
+let viteNodeApp;
+if (process.env.NODE_ENV === 'production') {
+    console.log('prod');
+    main();
+} else {
+    viteNodeApp = bootstrapApp();
+}
 
-export { viteNodeApp };
+export { bootstrapApp, viteNodeApp };

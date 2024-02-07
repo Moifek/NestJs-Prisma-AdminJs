@@ -33,6 +33,7 @@ export default defineConfig({
     })
   ],
   optimizeDeps: {
+    include: ['class-transformer','class-validator'],
     esbuildOptions: {
       tsconfigRaw: {
         compilerOptions: {
@@ -47,8 +48,6 @@ export default defineConfig({
         '@nestjs/microservices',
         '@nestjs/websockets',
         'cache-manager',
-        'class-transformer',
-        'class-validator',
         'fastify-swagger',
       ],
   },

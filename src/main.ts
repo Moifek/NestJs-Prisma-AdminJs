@@ -1,21 +1,18 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { ValidationPipe } from '@nestjs/common';
+import { INestApplication, NestApplicationOptions, ValidationPipe } from '@nestjs/common';
 import { LoggerMiddleware } from './Logger/logger.middleware';
 import session from 'express-session';
 
-if(!true){
-  async function bootstrap() {
+  export async function bootstrapApp(options?: NestApplicationOptions): Promise<INestApplication> {
     const app = await NestFactory.create(AppModule, { abortOnError: false });
+    app.enableCors()
     app.useGlobalPipes(
       new ValidationPipe({
         //disableErrorMessages: true,
         //whitelist: true
       }),
     );
-    //use this to apply the middleware to all routes
-    //const logger = new LoggerMiddleware();
-    //app.use(logger.use);
     app.use(
       session({
         secret: 'my-secret',
@@ -26,10 +23,24 @@ if(!true){
         }*/
       }),
     );
-    await app.listen(3000);
+    //use this to apply the middleware to all routes
+    //const logger = new LoggerMiddleware();
+    //app.use(logger.use);
+      return app;
   }
-  bootstrap();
-}
+  async function main() {
+    const app = await bootstrapApp();
+    
+    await app.listen(3000);
   
-  export const viteNodeApp = NestFactory.create(AppModule);  
+  
+  }
+  
+  export let viteNodeApp;   
 
+  if(process.env.NODE_ENV ==='production'){
+    console.log('prod');
+    main();
+  }else{
+    viteNodeApp = bootstrapApp();
+  }
