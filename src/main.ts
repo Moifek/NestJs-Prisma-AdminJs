@@ -4,7 +4,7 @@ import { ValidationPipe } from '@nestjs/common';
 import { LoggerMiddleware } from './Logger/logger.middleware';
 import session from 'express-session';
 
-if (!true) {
+if(!true){
   async function bootstrap() {
     const app = await NestFactory.create(AppModule, { abortOnError: false });
     app.useGlobalPipes(
@@ -30,5 +30,6 @@ if (!true) {
   }
   bootstrap();
 }
+  
+  export const viteNodeApp = NestFactory.create(AppModule);  
 
-export const viteNodeApp = NestFactory.create(AppModule);

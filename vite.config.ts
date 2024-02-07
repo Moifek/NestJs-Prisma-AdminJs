@@ -1,10 +1,16 @@
 import { defineConfig } from 'vite';
 import { VitePluginNode } from 'vite-plugin-node';
 export default defineConfig({
+  root: './src',
   // ...vite configures
   server: {
     // vite server configs, for details see \[vite doc\](https://vitejs.dev/config/#server-host)
     port: 3000
+  },
+  build:{
+    rollupOptions: {
+      external: ['reflect-metadata', 'node_modules'],
+    },
   },
   plugins: [
     ...VitePluginNode({
@@ -13,7 +19,7 @@ export default defineConfig({
       // you can also pass a function if you are using other frameworks, see Custom Adapter section
       adapter: 'nest',
       // tell the plugin where is your project entry
-      appPath: './src/main.ts',
+      appPath: './main.ts',
       // Optional, default: 'viteNodeApp'
       // the name of named export of you app from the appPath file
       exportName: 'viteNodeApp',
@@ -30,6 +36,7 @@ export default defineConfig({
     esbuildOptions: {
       tsconfigRaw: {
         compilerOptions: {
+          target: 'ES2020',
           experimentalDecorators: true,
         }
       }
