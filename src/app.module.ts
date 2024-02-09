@@ -27,12 +27,13 @@ const authenticate = async (email: string, password: string) => {
 
 AdminJS.registerAdapter({ Database, Resource });
 const prisma = new PrismaService();
-
+//const dmmf = ((prisma as any)._baseDmmf as any).dmmf;
 @Module({
   imports: [
     ConfigModule.forRoot(),
     AdminModule.createAdminAsync({
       useFactory: () => ({
+
         adminJsOptions: {
           rootPath: '/admin',
           resources: [
@@ -55,7 +56,7 @@ const prisma = new PrismaService();
             {
               resource: { model: getModelByName('Post'), client: prisma },
               options: {},
-            },
+            }
           ],
         },
         auth: {
