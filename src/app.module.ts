@@ -12,6 +12,12 @@ import { PrismaService } from './prisma/prisma.service';
 import AdminJS from 'adminjs';
 import { Database, Resource, getModelByName } from '@adminjs/prisma';
 import { AdminModule } from '@adminjs/nestjs';
+import { ComponentLoader } from 'adminjs';
+
+
+
+const prisma = new PrismaService();
+//const dmmf = ((prisma as any)._baseDmmf as any).dmmf;
 
 const DEFAULT_ADMIN = {
   email: 'admin@localhost',
@@ -26,8 +32,12 @@ const authenticate = async (email: string, password: string) => {
 };
 
 AdminJS.registerAdapter({ Database, Resource });
-const prisma = new PrismaService();
-//const dmmf = ((prisma as any)._baseDmmf as any).dmmf;
+const componentLoader = new ComponentLoader();
+/*
+const components = {
+  x: componentLoader.add('x','./AdminJs/components/chart.tsx'),
+}
+*/
 @Module({
   imports: [
     ConfigModule.forRoot(),
@@ -59,6 +69,7 @@ const prisma = new PrismaService();
             }
           ],
         },
+        componentLoader,
         auth: {
           authenticate,
           cookieName: 'adminjs',

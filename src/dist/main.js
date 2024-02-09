@@ -9,7 +9,7 @@ import { PartialType } from '@nestjs/mapped-types';
 import { Strategy, ExtractJwt } from 'passport-jwt';
 import { Strategy as Strategy$1 } from 'passport-google-oauth20';
 import { config } from 'dotenv';
-import AdminJS from 'adminjs';
+import AdminJS, { ComponentLoader } from 'adminjs';
 import { Database, Resource, getModelByName } from '@adminjs/prisma';
 import { AdminModule } from '@adminjs/nestjs';
 import session from 'express-session';
@@ -744,6 +744,8 @@ function _ts_decorate(decorators, target, key, desc) {
     else for(var i = decorators.length - 1; i >= 0; i--)if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 }
+const prisma = new PrismaService();
+//const dmmf = ((prisma as any)._baseDmmf as any).dmmf;
 const DEFAULT_ADMIN = {
     email: 'admin@localhost',
     password: 'password'
@@ -758,7 +760,7 @@ AdminJS.registerAdapter({
     Database,
     Resource
 });
-const prisma = new PrismaService();
+const componentLoader = new ComponentLoader();
 class AppModule {
     configure(consumer) {
         consumer.apply(LoggerMiddleware).exclude({
@@ -817,6 +819,7 @@ AppModule = _ts_decorate([
                                 }
                             ]
                         },
+                        componentLoader,
                         auth: {
                             authenticate,
                             cookieName: 'adminjs',
