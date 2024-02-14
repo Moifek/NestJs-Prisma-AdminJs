@@ -28,7 +28,7 @@ export class AuthService {
         secret: process.env['JWT_SECRET'],
       });
       return {
-        access_token: token,
+        server_jwt_token: token,
       };
     } catch (error) {
       console.log(error);
@@ -50,18 +50,16 @@ export class AuthService {
       email: req.user.email,
       password: 'googlePassword',
     };
-    const dbUser = await this.userService.findOne(user.firstName);
-    console.log(dbUser);
+    const dbUser : User = await this.userService.findOne(user.firstName);
     if (dbUser === null) this.userService.create(user);
     else console.log('---: USER EXISTS ALREADY :---');
-    const Token = await this.signIn(user.firstName, user.password);
+    const Token : string = await this.signIn(user.firstName, user.password);
     const response = {
       sessionId: req.sessionID,
-      token: Token,
+      Token,
       message: 'User information from google',
       user: req.user,
     };
-    console.log(response);
     return response;
   }
 }

@@ -18,9 +18,10 @@ import session from 'express-session';
         secret: 'my-secret',
         resave: false,
         saveUninitialized: false,
-        /*cookie: {
+        store: new session.MemoryStore(), // this is purely for development, should be swapped to a database or file or anything our of memory in production
+        cookie: {
           maxAge: 60000
-        }*/
+        }
       }),
     );
     //use this to apply the middleware to all routes
@@ -31,7 +32,7 @@ import session from 'express-session';
   async function main() {
     const app = await bootstrapApp();
     
-    await app.listen(3000);
+    await app.listen(3001);
   
   
   }
@@ -39,7 +40,6 @@ import session from 'express-session';
   export let viteNodeApp;   
 
   if(process.env.NODE_ENV ==='production'){
-    console.log('prod');
     main();
   }else{
     viteNodeApp = bootstrapApp();
