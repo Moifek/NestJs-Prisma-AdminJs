@@ -38,27 +38,23 @@ export class AuthService {
       });
     }
   }
-  async googleLogin(req) {
+   async OAuthLogin(req) {
     if (!req.user) {
       return 'No user from google';
     }
-
-    const user: User = {
-      id: req.user.id === undefined ? 0 : req.user.id,
-      firstName: req.user.firstName,
-      lastName: req.user.lastName,
-      email: req.user.email,
-      password: 'googlePassword',
-    };
+      let {user} = req;
+      if(user.user){
+        user = user.user;
+      }
+      user.password = 'googlePassword';
     const dbUser : User = await this.userService.findOne(user.firstName);
-    if (dbUser === null) this.userService.create(user);
+    if (dbUser === undefined) this.userService.create(user);
     else console.log('---: USER EXISTS ALREADY :---');
     const Token : string = await this.signIn(user.firstName, user.password);
     const response = {
       sessionId: req.sessionID,
       Token,
-      message: 'User information from google',
-      user: req.user,
+      user: user,
     };
     return response;
   }

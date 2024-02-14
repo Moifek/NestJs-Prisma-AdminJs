@@ -70,13 +70,16 @@ export class UsersService {
 
   async findOne(identifier: number | string): Promise<User | undefined> {
     try {
+      console.log(identifier)
       if (typeof identifier === 'string') {
         const user = await this.prisma.user.findFirst({
           where: {
             username: identifier,
           },
         });
-        return user;
+        
+        if (user === undefined) return undefined;
+        else return user;
       } else {
         const user = await this.prisma.user.findUnique({
           where: {
