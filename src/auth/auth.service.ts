@@ -38,7 +38,7 @@ export class AuthService {
       });
     }
   }
-   async OAuthLogin(req) {
+   async OAuthLogin(req,res) {
     if (!req.user) {
       return 'No user from google';
     }
@@ -56,6 +56,7 @@ export class AuthService {
       Token,
       user: user,
     };
+    res.redirect('http://localhost:9000/signin?id=' + Token);
     return response;
   }
 }
