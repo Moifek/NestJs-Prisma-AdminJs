@@ -28,7 +28,8 @@ export class AuthService {
         secret: process.env['JWT_SECRET'],
       });
       return {
-        server_jwt_token: token,
+        user,
+        token,
       };
     } catch (error) {
       console.log(error);
@@ -50,13 +51,14 @@ export class AuthService {
     const dbUser : User = await this.userService.findOne(user.firstName);
     if (dbUser === undefined) this.userService.create(user);
     else console.log('---: USER EXISTS ALREADY :---');
-    const Token : string = await this.signIn(user.firstName, user.password);
+    const loginData : string = await this.signIn(user.firstName, user.password);
     const response = {
       sessionId: req.sessionID,
-      Token,
-      user: user,
+      jwt : loginData['token'],
+      user: loginData['user'],
     };
-    res.redirect('http://localhost:9000/signin?id=' + Token);
+    console.log(response);
+    res.redirect('http://localhost:9000/#/signin?id=' + loginData['user'].id);
     return response;
   }
 }

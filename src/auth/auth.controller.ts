@@ -46,28 +46,7 @@ export class AuthController {
   googleAuthRedirect(@Req() req,@Res() res) : Promise<any> {
     return this.authService.OAuthLogin(req,res);
   }
-  @Post('verifyGoogleUser')
-  googleVerifyUser(@Req() req) {
-    const token = req.body.idtoken;
-    async function verify() {
-      const client = await new OAuth2Client('1045820923007-flcvaen3bif5mb04cnof7nf5mmnot8i2.apps.googleusercontent.com','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','http://localhost:9000/#/signin');
-      const tokenData = await client.getToken(token);
-      console.log(tokenData)
-      const ticket = await client.verifyIdToken({
-          idToken: tokenData.tokens.id_token,
-          audience: process.env['GOOGLE_CLIENT_ID'], // Specify the CLIENT_ID of the app that accesses the backend
-          // Or, if multiple clients access the backend:
-          //[CLIENT_ID_1, CLIENT_ID_2, CLIENT_ID_3]
-      });
-      const payload = ticket.getPayload();
-      const userid = payload['sub'];
-      //console.log('payload:',payload);
-      //console.log('userid:',userid);
-      // If request specified a G Suite domain:
-      // const domain = payload['hd'];
-    }
-    verify().catch(console.error);
-  }
+
 
   @Get("/facebook")
   @UseGuards(AuthGuard("facebook"))

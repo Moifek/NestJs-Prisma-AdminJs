@@ -6,7 +6,7 @@ import session from 'express-session';
 
   export async function bootstrapApp(options?: NestApplicationOptions): Promise<INestApplication> {
     const app = await NestFactory.create(AppModule, { abortOnError: false });
-    app.enableCors()
+    app.enableCors( {origin:true})
     app.useGlobalPipes(
       new ValidationPipe({
         //disableErrorMessages: true,
