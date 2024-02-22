@@ -46,6 +46,13 @@ export class AuthController {
   googleAuthRedirect(@Req() req,@Res() res) : Promise<any> {
     return this.authService.OAuthLogin(req,res);
   }
+  
+  @Post('googleLogin')
+  @UseGuards(AuthGuard('google'))
+  googleAuthLogin(@Req() req,@Res() res) : Promise<any> {
+    res.header('Access-Control-Allow-Origin', '*');
+    return this.authService.signIn(req,res);
+  }
 
 
   @Get("/facebook")

@@ -17,6 +17,7 @@ export class AuthService {
   ) {}
   async signIn(username: string, pass: string): Promise<any> {
     try {
+      console.log('reach')
       const user: User = await this.userService.findOne(username);
       if (user.password !== pass) {
         throw new UnauthorizedException();
@@ -51,14 +52,11 @@ export class AuthService {
     const dbUser : User = await this.userService.findOne(user.firstName);
     if (dbUser === undefined) this.userService.create(user);
     else console.log('---: USER EXISTS ALREADY :---');
-    const loginData : string = await this.signIn(user.firstName, user.password);
     const response = {
       sessionId: req.sessionID,
-      jwt : loginData['token'],
-      user: loginData['user'],
     };
-    console.log(response);
-    res.redirect('http://localhost:9000/#/signin?id=' + loginData['user'].id);
+    res.header('Access-Control-Allow-Origin', 'http://localhost:9000/');
+    res.redirect('http://localhost:9000/#/signin?Session=' + req.sessionID);
     return response;
   }
 }

@@ -5,8 +5,8 @@ import { LoggerMiddleware } from './Logger/logger.middleware';
 import session from 'express-session';
 
   export async function bootstrapApp(options?: NestApplicationOptions): Promise<INestApplication> {
-    const app = await NestFactory.create(AppModule, { abortOnError: false });
-    app.enableCors( {origin:true})
+    const app = await NestFactory.create(AppModule, { abortOnError: false, cors:true });
+    app.enableCors( {origin:['*','http://localhost:9000','X-Requested-With'],preflightContinue:true,methods:'*'});
     app.useGlobalPipes(
       new ValidationPipe({
         //disableErrorMessages: true,
