@@ -15,12 +15,21 @@ export class AuthService {
     private userService: UsersService,
     private jwtService: JwtService,
   ) {}
-  async signIn(username: string, pass: string): Promise<any> {
+  async signIn({username,pass,session,userId} : {username?: string, pass?: string, session?:string, userId? : string}): Promise<any> {
     try {
-      console.log('reach')
-      const user: User = await this.userService.findOne(username);
-      if (user.password !== pass) {
-        throw new UnauthorizedException();
+      let user : User = null;
+      if(session){
+        const userIdInt : number = Number.parseInt(userId);
+        console.log('--------------------')
+        console.log(userIdInt)
+        console.log('--------------------')
+        user = await this.userService.findOne(userIdInt);
+        
+      }else{
+        user = await this.userService.findOne(username);
+        if (user.password !== pass) {
+          throw new UnauthorizedException();
+        }
       }
       const { password, ...result } = user;
       const payload = { sub: user.id, username: user.userName };
@@ -40,7 +49,7 @@ export class AuthService {
       });
     }
   }
-   async OAuthLogin(req,res) {
+   async OAuthLogin(req,res,from:string) {
     if (!req.user) {
       return 'No user from google';
     }
@@ -48,15 +57,22 @@ export class AuthService {
       if(user.user){
         user = user.user;
       }
-      user.password = 'googlePassword';
+      if(from === 'google'){
+        user.password = req.user.googleAccount.googleAccessToken;        
+      }else{
+        user.password = 'facebookPassword';
+      }
     const dbUser : User = await this.userService.findOne(user.firstName);
     if (dbUser === undefined) this.userService.create(user);
     else console.log('---: USER EXISTS ALREADY :---');
     const response = {
       sessionId: req.sessionID,
     };
-    res.header('Access-Control-Allow-Origin', 'http://localhost:9000/');
-    res.redirect('http://localhost:9000/#/signin?Session=' + req.sessionID);
+    if(from === 'facebook'){
+      res.redirect('http://localhost:9000/#/signin?userId=' + dbUser.id + '&Session=' + req.sessionID);
+    }else{
+      res.redirect('http://localhost:9000/#/signin?userId=' + dbUser.id + '&Session=' + req.sessionID);
+    }
     return response;
   }
 }

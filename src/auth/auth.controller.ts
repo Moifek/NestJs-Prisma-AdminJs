@@ -4,6 +4,7 @@ import {
   Get,
   HttpCode,
   HttpStatus,
+  Options,
   Post,
   Req,
   Res,
@@ -15,6 +16,7 @@ import { OAuth2Client } from 'google-auth-library';
 import { UsersService } from '../users/users.service';
 import { AuthGuard } from '@nestjs/passport';
 import { JwtAuthGuard } from './JWT/jwt-auth.guard';
+import { AuthenticatedGuard } from './session.guard';
 @Controller('auth')
 export class AuthController {
   constructor(
@@ -25,7 +27,7 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   @Post('login')
   signIn(@Body() signInDto: SignInDto) {
-    return this.authService.signIn(signInDto.username, signInDto.pass);
+    return this.authService.signIn({username:signInDto.username, pass:signInDto.pass});
   }
 
   @HttpCode(HttpStatus.OK)
@@ -44,16 +46,17 @@ export class AuthController {
   @Get('redirect')
   @UseGuards(AuthGuard('google'))
   googleAuthRedirect(@Req() req,@Res() res) : Promise<any> {
-    return this.authService.OAuthLogin(req,res);
+    return this.authService.OAuthLogin(req,res,'google');
   }
   
-  @Post('googleLogin')
-  @UseGuards(AuthGuard('google'))
-  googleAuthLogin(@Req() req,@Res() res) : Promise<any> {
-    res.header('Access-Control-Allow-Origin', '*');
-    return this.authService.signIn(req,res);
+  @Post('socialLogin')
+  @UseGuards(AuthenticatedGuard)
+  async socialAuthLogin(@Req() req) : Promise<any> {
+    const authData = await this.authService.signIn({session:req.body.sessionCode,userId:req.body.userId});
+    const JsonData = JSON.stringify(authData);
+    console.log(authData);
+    return JsonData;
   }
-
 
   @Get("/facebook")
   @UseGuards(AuthGuard("facebook"))
@@ -64,7 +67,9 @@ export class AuthController {
   @Get("/facebook/redirect")
   @UseGuards(AuthGuard("facebook"))
   async facebookLoginRedirect(@Req() req,@Res() res): Promise<any> {
-    return this.authService.OAuthLogin(req,res);
+    console.log('facebook redirect -------------------')
+    return this.authService.OAuthLogin(req,res,'facebook');
   }
+
 }
 

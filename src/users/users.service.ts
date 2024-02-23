@@ -25,7 +25,6 @@ export class UsersService {
   ) {}
   async create(createUserDto: CreateUserDto | User): Promise<boolean> {
     try {
-      console.log('createUserDto:', createUserDto);
       await this.prisma.user.create({
         data: {
           password: createUserDto.password,

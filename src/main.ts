@@ -3,10 +3,20 @@ import { AppModule } from './app.module';
 import { INestApplication, NestApplicationOptions, ValidationPipe } from '@nestjs/common';
 import { LoggerMiddleware } from './Logger/logger.middleware';
 import session from 'express-session';
+import { CorsOptions } from '@nestjs/common/interfaces/external/cors-options.interface';
+
+const corsOptions: CorsOptions = {
+  origin: 'http://localhost:9000', // Change this to your client's URL
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // Add any other methods your app uses
+  allowedHeaders: ['Content-Type', 'Authorization'], // Add any other headers your app uses
+  preflightContinue: false,
+  optionsSuccessStatus: 200,
+};
 
   export async function bootstrapApp(options?: NestApplicationOptions): Promise<INestApplication> {
     const app = await NestFactory.create(AppModule, { abortOnError: false, cors:true });
-    app.enableCors( {origin:['*','http://localhost:9000','X-Requested-With'],preflightContinue:true,methods:'*'});
+    
+    app.enableCors(corsOptions);
     app.useGlobalPipes(
       new ValidationPipe({
         //disableErrorMessages: true,

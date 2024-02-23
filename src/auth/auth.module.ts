@@ -7,8 +7,8 @@ import { AuthGuard } from './native_auth.guard';
 import { JwtStrategy } from './JWT/jwt.strategy';
 import { JwtAuthGuard } from './JWT/jwt-auth.guard';
 import { PassportModule } from '@nestjs/passport';
-import { GoogleStrategy } from './google/google.strategy';
-import { FacebookStrategy } from './google/facebook.strategy';
+import { GoogleStrategy } from './strategies/google.strategy';
+import { FacebookStrategy } from './strategies/facebook.strategy';
 
 //native autguard that validates jwt token with secret normally
 //jwt strategy that validates jwt token with secret using passport strategy & library
